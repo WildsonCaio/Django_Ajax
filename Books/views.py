@@ -1,4 +1,5 @@
 from unicodedata import name
+from django.http import HttpResponse
 from django.shortcuts import get_object_or_404, redirect, render
 from .models import Books
 
@@ -8,13 +9,17 @@ def index(request):
 
 
 def add_book(request):
-    title = request.POST.get('title')
-    pages = request.POST.get('pages')
+    title = request.GET.get('title')
+    pages = request.GET.get('pages')
     cover = request.FILES.get('cover')
-    author = request.POST.get('author')
+    print(cover)
+    author = request.GET.get('author')
     add = Books(title=title, pages=pages, cover=cover, author=author)
-    add.save()    
-    return redirect('home')
+    try:
+        add.save()
+        return HttpResponse('true') 
+    except:
+        return HttpResponse('false')   
 
 
 def delete_book(request, id):
